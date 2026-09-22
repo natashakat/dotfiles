@@ -2,26 +2,40 @@
 
 {
   imports = [
-    <home-manager/nixos/modules/home-manager.nix>
+    ./shell.nix
+    ./kde.nix
+    ./gtk.nix
+    ./apps.nix
   ];
 
-  home-manager.useUserModules = true;
-  home-manager.users."helianthus" = { config, pkgs, ... }: {
-    home.username = "helianthus";
-    home.homeDirectory = "/home/helianthus";
-    home.stateVersion = "26.05";
+  home.username = "helianthus";
+  home.homeDirectory = "/home/helianthus";
+  home.stateVersion = "26.05";
 
-    programs.obsidian.enable = true;
-    programs.obsidian.defaultApp = "vscodium-fhs";
+  programs.obsidian.enable = true;
+  programs.obsidian.defaultApp = "vscodium-fhs";
 
-    programs.git.enable = true;
-    programs.git.userName = "helianthus";
-    programs.git.userEmail = "helianthus@pratum";
+  programs.git.enable = true;
+  programs.git.userName = "helianthus";
+  programs.git.userEmail = "helianthus@pratum";
 
-    programs.vscode.enable = true;
+  programs.vscode.enable = true;
+  programs.bash.enable = true;
 
-    home.packages = with pkgs; [
-      obsidian
-    ];
+  xdg.userDirs = {
+    enable = true;
+    createDirectories = true;
+    desktop = "\${HOME}/Desktop";
+    download = "\${HOME}/Downloads";
+    templates = "\${HOME}/Templates";
+    publicShare = "\${HOME}/Public";
+    documents = "\${HOME}/Documents";
+    music = "\${HOME}/Music";
+    pictures = "\${HOME}/Pictures";
+    videos = "\${HOME}/Videos";
   };
+
+  home.packages = with pkgs; [
+    obsidian
+  ];
 }
