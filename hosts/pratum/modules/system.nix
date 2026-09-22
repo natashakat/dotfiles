@@ -43,6 +43,7 @@
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
+  hardware.cpu.intel.updateMicrocode = true;
   hardware.enableRedistributableFirmware = true;
 
   virtualisation.libvirtd.enable = true;
