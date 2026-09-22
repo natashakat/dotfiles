@@ -57,6 +57,10 @@
   security.sudo.enable = false;
   security.sudo-rs.enable = false;
 
+  programs.steam = {
+    enable = true;
+  };
+
   programs.nh = {
     enable = true;
     clean.enable = true;
@@ -78,5 +82,6 @@
     ninja
     cmake
     python3
+    libreoffice
   ];
 }
