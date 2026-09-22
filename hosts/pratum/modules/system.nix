@@ -151,6 +151,8 @@
     rust-analyzer
     nil
     nix-index
+    nixfmt
+    jetbrains-mono
     wl-clipboard
     nodePackages.typescript
     nodePackages.prettier

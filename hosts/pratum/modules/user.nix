@@ -8,7 +8,6 @@
     packages = with pkgs; [
       kdePackages.kate
       prismlauncher
-      vscodium-fhs
       git
       keepassxc
       thunderbird

@@ -25,7 +25,48 @@
   programs.git.settings.user.name = "helianthus";
   programs.git.settings.user.email = "helianthus@pratum";
 
-  programs.vscode.enable = true;
+  programs.vscodium = {
+    enable = true;
+    package = pkgs.vscodium-fhs;
+    profiles.default = {
+      extensions = with pkgs.vscode-extensions; [
+        jnoortheen.nix-ide
+        tamasfe.even-better-toml
+        rust-lang.rust-analyzer
+        ms-python.python
+        editorconfig.editorconfig
+        esbenp.prettier-vscode
+        eamodio.gitlens
+        usernamehw.errorlens
+        catppuccin.catppuccin-vsc
+        pkief.material-icon-theme
+      ];
+      userSettings = {
+        "workbench.colorTheme" = "Catppuccin Mocha";
+        "workbench.iconTheme" = "material-icon-theme";
+        "workbench.startupEditor" = "none";
+        "workbench.smoothScrolling" = true;
+        "workbench.list.smoothScrolling" = true;
+        "editor.fontFamily" = "JetBrains Mono";
+        "editor.fontSize" = 14;
+        "editor.fontLigatures" = true;
+        "editor.cursorBlinking" = "smooth";
+        "editor.cursorSmoothCaretAnimation" = "on";
+        "editor.smoothScrolling" = true;
+        "editor.minimap.enabled" = false;
+        "editor.bracketPairColorization.enabled" = true;
+        "editor.guides.bracketPairs" = true;
+        "editor.stickyScroll.enabled" = true;
+        "editor.formatOnSave" = true;
+        "files.autoSave" = "afterDelay";
+        "terminal.integrated.fontFamily" = "JetBrains Mono";
+        "nix.enableLanguageServer" = true;
+        "nix.serverPath" = "nil";
+        "nix.formatterPath" = "nixfmt";
+        "rust-analyzer.check.command" = "clippy";
+      };
+    };
+  };
   programs.bash.enable = true;
 
   xdg.userDirs = {
