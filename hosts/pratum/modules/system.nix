@@ -154,9 +154,9 @@
     nixfmt
     jetbrains-mono
     wl-clipboard
-    nodePackages.typescript
-    nodePackages.prettier
-    nodePackages.eslint
-    nodePackages.pnpm
+    typescript
+    prettier
+    eslint
+    pnpm
   ];
 }
