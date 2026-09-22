@@ -48,6 +48,14 @@
   virtualisation.libvirtd.enable = true;
   programs.virt-manager.enable = true;
 
+  security.run0 = {
+    enable = true;
+    sudo-shim.enable = true;
+  };
+
+  security.sudo.enable = false;
+  security.sudo-rs.enable = false;
+
   programs.nh = {
     enable = true;
     clean.enable = true;
