@@ -83,5 +83,38 @@
     cmake
     python3
     libreoffice
+    openscad
+    freecad
+    telegram-desktop
+    discord
+    signal-desktop
+    lazydocker
+    direnv
+    helix
+    neovim
+    eza
+    bat
+    fd
+    fzf
+    zoxide
+    zellij
+    tmux
+    btop
+    fastfetch
+    atuin
+    starship
+    ripgrep
+    lazygit
+    gh
+    gitui
+    rustc
+    cargo
+    rust-analyzer
+    nil
+    nix-index
+    nodePackages.typescript
+    nodePackages.prettier
+    nodePackages.eslint
+    nodePackages.pnpm
   ];
 }

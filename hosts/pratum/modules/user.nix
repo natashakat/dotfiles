@@ -25,6 +25,21 @@
       motrix
       opencode
       nodejs
+      jetbrains-clion
+      jetbrains-idea
+      jetbrains-webstorm
+      jetbrains-phpstorm
+      jetbrains-pycharm
+      jetbrains-rubymine
+      jetbrains-goland
+      jetbrains-rustrover
+      jetbrains-datagrip
+      jetbrains-database-client
+      telegram-desktop
+      discord
+      signal-desktop
+      slack
+      firefox
     ];
   };
 
