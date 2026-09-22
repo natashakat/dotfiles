@@ -12,8 +12,17 @@
   home.homeDirectory = "/home/helianthus";
   home.stateVersion = "26.05";
 
-  programs.obsidian.enable = true;
-  programs.obsidian.defaultApp = "vscodium-fhs";
+  programs.obsidian = {
+    enable = true;
+    defaultApp = "vscodium-fhs";
+    package = pkgs.obsidian;
+    vaults = {
+      main = {
+        enable = true;
+        vault = /home/helianthus/Documents/dotfiles/vault;
+      };
+    };
+  };
 
   programs.git.enable = true;
   programs.git.userName = "helianthus";
