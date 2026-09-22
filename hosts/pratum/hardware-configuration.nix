@@ -49,6 +49,9 @@
     };
 
   boot.zfs.extraPools = [ "merry-g" "vault" ];
+  boot.zfs.requestEncryptionCredentials = true;
+  boot.zfs.useKeyringForCredentials = true;
+  boot.zfs.forceImportAll = true;
 
   swapDevices = [ ];
 
