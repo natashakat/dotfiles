@@ -36,9 +36,13 @@
       jetbrains-datagrip
       jetbrains-database-client
       telegram-desktop
-      discord
+      (discord.override {
+        withOpenASAR = true;
+        withVencord = true;
+      })
       signal-desktop
       slack
+      element-desktop
     ];
   };
 
