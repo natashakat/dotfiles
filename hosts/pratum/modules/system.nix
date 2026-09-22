@@ -57,5 +57,6 @@
 
   environment.systemPackages = with pkgs; [
     nodejs
+    zfs
   ];
 }
