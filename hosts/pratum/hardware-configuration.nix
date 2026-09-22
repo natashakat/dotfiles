@@ -49,6 +49,8 @@
     };
 
   boot.zfs.extraPools = [ "merry-g" "vault" ];
+  # Explicit true silences warning; required while forceImportAll is set
+  boot.zfs.forceImportRoot = true;
   boot.zfs.requestEncryptionCredentials = true;
   boot.zfs.useKeyringForCredentials = true;
   boot.zfs.forceImportAll = true;
