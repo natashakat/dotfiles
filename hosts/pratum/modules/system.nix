@@ -67,7 +67,6 @@
   environment.systemPackages = with pkgs; [
     nodejs
     zfs
-    xenia-canary
     vulkan-loader
     mesa
     SDL2
