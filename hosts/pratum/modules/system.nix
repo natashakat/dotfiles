@@ -112,6 +112,7 @@
     rust-analyzer
     nil
     nix-index
+    wl-clipboard
     nodePackages.typescript
     nodePackages.prettier
     nodePackages.eslint
