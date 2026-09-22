@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 {
-  gtk = {
+  home.gtk = {
     enable = true;
     theme.name = "MacTahoe-dark";
     iconTheme.name = "MacTahoe-dark";

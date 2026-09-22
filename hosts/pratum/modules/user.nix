@@ -25,16 +25,14 @@
       motrix
       opencode
       nodejs
-      jetbrains-clion
-      jetbrains-idea
-      jetbrains-webstorm
-      jetbrains-phpstorm
-      jetbrains-pycharm
-      jetbrains-rubymine
-      jetbrains-goland
-      jetbrains-rustrover
-      jetbrains-datagrip
-      jetbrains-database-client
+      pkgs.jetbrains.clion
+      pkgs.jetbrains.idea
+      pkgs.jetbrains.webstorm
+      pkgs.jetbrains.phpstorm
+      pkgs.jetbrains.pycharm
+      pkgs.jetbrains.ruby-mine
+      pkgs.jetbrains.goland
+      pkgs.jetbrains.datagrip
       telegram-desktop
       (discord.override {
         withOpenASAR = true;

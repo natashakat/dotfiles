@@ -9,6 +9,7 @@
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
   networking.hostName = "pratum";
+  networking.hostId = "685d54a9";
   networking.networkmanager.enable = true;
 
   time.timeZone = "Europe/Amsterdam";
