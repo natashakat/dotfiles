@@ -24,6 +24,7 @@
       xenia-canary
       motrix
       opencode
+      nodejs
     ];
   };
 

@@ -54,4 +54,8 @@
     clean.extraArgs = "--keep-since 4d --keep 3";
     flake = "/home/helianthus/Documents/dotfiles";
   };
+
+  environment.systemPackages = with pkgs; [
+    nodejs
+  ];
 }
