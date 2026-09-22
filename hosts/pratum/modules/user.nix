@@ -39,7 +39,6 @@
       discord
       signal-desktop
       slack
-      firefox
     ];
   };
 
