@@ -17,7 +17,7 @@
   }: {
     nixosConfigurations.pratum = nixpkgs.lib.nixosSystem {
       specialArgs = { inherit inputs; };
-      modules = [ ./hosts/workstation/configuration.nix ];
+      modules = [ ./hosts/pratum/configuration.nix ];
     };
   };
 }
