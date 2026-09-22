@@ -27,7 +27,8 @@ NixOS configuration managed declaratively with Nix Flakes and Home Manager.
 
 ## Features
 
-- **ZFS** - Encrypted pools (merry-g, vault) with auto-import
+- **ZFS** - Encrypted pools (merry-g, vault) with auto-import, pool roots user-writable
+- **NFS** - `mireo:/data` automounted at `/mnt/mireo-data`
 - **run0** - sudo replacement with OpenASAR + Vencord Discord
 - **Intel microcode** - CPU microcode updates
 - **KDE Plasma** - WhiteSur-dark theme

@@ -69,6 +69,43 @@
     flake = "/home/helianthus/Documents/dotfiles";
   };
 
+  fileSystems."/mnt/mireo-data" = {
+    device = "mireo:/data";
+    fsType = "nfs";
+    options = [
+      "x-systemd.automount"
+      "noauto"
+      "x-systemd.idle-timeout=600"
+      "_netdev"
+      "nofail"
+    ];
+  };
+
+  systemd.tmpfiles.rules = [
+    "d /mnt/mireo-data 0755 root root -"
+  ];
+
+  systemd.services.zfs-user-permissions = {
+    description = "Make ZFS pool roots user writable";
+    wantedBy = [ "multi-user.target" ];
+    after = [ "zfs-import.target" "zfs.target" ];
+    wants = [ "zfs-import.target" ];
+    serviceConfig.Type = "oneshot";
+    serviceConfig.RemainAfterExit = true;
+    script = ''
+      for d in /tank /vault; do
+        for i in $(seq 1 30); do
+          mountpoint -q "$d" && break
+          sleep 1
+        done
+        if mountpoint -q "$d"; then
+          chown helianthus:users "$d"
+          chmod 0775 "$d"
+        fi
+      done
+    '';
+  };
+
   environment.systemPackages = with pkgs; [
     nodejs
     zfs
@@ -84,6 +121,7 @@
     cmake
     python3
     libreoffice
+    obsidian
     openscad
     freecad
     telegram-desktop
