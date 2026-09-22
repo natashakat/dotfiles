@@ -1,0 +1,33 @@
+# Agent documentation (local-only)
+AGENTS.md
+
+# Obsidian vault (large binary files)
+vault/notes/*.md
+vault/.obsidian/workspace*
+vault/.obsidian/graph.json
+
+# Nix store
+*.nix-store
+result
+result-*
+
+# Temp files
+*.swp
+*.swo
+*~
+.DS_Store
+.thumbnails
+
+# Local-only
+*.local
+.nix-defexpr
+.nix-profile
+.npm
+.oh-my-bash
+.vscode-oss
+.vscode-oss-shared
+.vscodium
+.vscodium-fhs
+.local/share/opencode
+.opencode
+.caveman/

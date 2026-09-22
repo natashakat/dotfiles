@@ -32,7 +32,7 @@ NixOS configuration managed declaratively with Nix Flakes and Home Manager.
 - **Intel microcode** - CPU microcode updates
 - **KDE Plasma** - WhiteSur-dark theme
 - **Home Manager** - Declarative user configuration
-- **Xenial ZFS encryption** - Boot-time key prompt via systemd-ask-password
+- **ZFS encryption** - Boot-time key prompt via systemd-ask-password
 - **Programs**: Steam, LibreOffice, Firefox, Git, VSCode, Obsidian, JetBrains IDEs, Rust/Node.js toolchain, dev tools
 
 ## Rebuild
