@@ -67,5 +67,17 @@
   environment.systemPackages = with pkgs; [
     nodejs
     zfs
+    xenia-canary
+    vulkan-loader
+    mesa
+    SDL2
+    gtk3
+    alsa-lib
+    libuuid
+    lz4
+    pkg-config
+    ninja
+    cmake
+    python3
   ];
 }
