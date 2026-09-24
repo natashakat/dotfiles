@@ -71,17 +71,25 @@
     flake = "/home/helianthus/Documents/dotfiles";
   };
 
-  fileSystems."/mnt/mireo-data" = {
-    device = "mireo:/data";
-    fsType = "nfs";
-    options = [
-      "x-systemd.automount"
-      "noauto"
-      "x-systemd.idle-timeout=600"
-      "_netdev"
-      "nofail"
-    ];
-  };
+  systemd.mounts = [
+    {
+      where = "/mnt/mireo-data";
+      what = "mireo:/data";
+      type = "nfs";
+      options = "noauto,nofail,_netdev";
+    }
+  ];
+
+  systemd.automounts = [
+    {
+      where = "/mnt/mireo-data";
+      wantedBy = [ "remote-fs.target" ];
+      automountConfig = {
+        TimeoutIdleSec = 600;
+        DirectoryMode = "0755";
+      };
+    }
+  ];
 
   systemd.tmpfiles.rules = [
     "d /mnt/mireo-data 0755 root root -"
