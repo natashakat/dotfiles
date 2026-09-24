@@ -228,63 +228,69 @@
     videos = "\${HOME}/Videos";
   };
 
+  # KDE Plasma, declaratively managed via plasma-manager.
+  # NOTE: plasma-manager owns plasmarc/kwinrc/kdeglobals/kcminputrc, so those
+  # must NOT also be set via xdg.configFile (would conflict).
+  programs.plasma = {
+    enable = true;
+    workspace = {
+      theme = "WhiteSur-dark";
+      colorScheme = "WhiteSurDark";
+      iconTheme = "WhiteSur-dark";
+      cursor = {
+        theme = "WhiteSur-cursors";
+        size = 24;
+      };
+      wallpaper = "${pkgs.whitesur-kde}/share/wallpapers/WhiteSur-dark/contents/images/3840x2160.jpg";
+    };
+    fonts = {
+      general = {
+        family = "Noto Sans";
+        pointSize = 10;
+      };
+      fixedWidth = {
+        family = "JetBrains Mono";
+        pointSize = 12;
+      };
+    };
+    kwin = {
+      virtualDesktops = {
+        number = 1;
+        rows = 1;
+      };
+      nightLight = {
+        enable = true;
+        mode = "location";
+        location = {
+          latitude = "52.37";
+          longitude = "4.91";
+        };
+      };
+      tiling = {
+        padding = 4;
+        layout = {
+          id = "2e2dcfc2-a961-415b-838f-e6a9a1d1ffe0";
+          tiles = {
+            layoutDirection = "horizontal";
+            tiles = [
+              { width = 0.25; }
+              { width = 0.5; }
+              { width = 0.25; }
+            ];
+          };
+        };
+      };
+    };
+    configFile.kwinrc."org.kde.kdecoration2" = {
+      library = "org.kde.kwin.aurorae.v2";
+      theme = "__aurorae__svg__WhiteSur-dark";
+    };
+  };
+
   xdg.configFile = {
     "plasma-localerc".text = ''
       [Formats]
       LANG=en_US.UTF-8
-    '';
-
-    "plasmarc".text = ''
-      [Theme]
-      name=WhiteSur-dark
-    '';
-
-    "kwinrc".text = ''
-      [Desktops]
-      Id_1=2e2dcfc2-a961-415b-838f-e6a9a1d1ffe0
-      Number=1
-      Rows=1
-
-      [Tiling]
-      padding=4
-      tiles={"layoutDirection":"horizontal","tiles":[{"width":0.25},{"width":0.5},{"width":0.25}]}
-
-      [Xwayland]
-      Scale=1
-
-      [org.kde.kdecoration2]
-      library=org.kde.kwin.aurorae.v2
-      theme=__aurorae__svg__WhiteSurLiquid-dark
-
-      [NightColor]
-      Active=true
-      LatitudeFixed=52.37
-      LongitudeFixed=4.91
-      Mode=Location
-    '';
-
-    "kdeglobals".text = ''
-      [Colors:Button]
-      BackgroundAlternate=70,70,70
-      BackgroundNormal=90,90,90
-      DecorationFocus=49,91,239
-      DecorationHover=49,91,239
-      ForegroundActive=61,174,233
-      ForegroundInactive=170,170,170
-      ForegroundLink=41,128,185
-
-      [General]
-      font=Noto Sans,10,-1,0,50,0,0,0,0,0
-      fixed=JetBrains Mono,12,-1,5,50,0,0,0,0,0
-
-      [Icons]
-      Theme=WhiteSur-dark
-    '';
-
-    "kcminputrc".text = ''
-      [Mouse]
-      cursorTheme=WhiteSur-cursors
-      cursorSize=24
     '';
 
     "kate/katerc".text = ''
