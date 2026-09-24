@@ -111,6 +111,7 @@
     wants = [ "zfs-import.target" ];
     serviceConfig.Type = "oneshot";
     serviceConfig.RemainAfterExit = true;
+    path = [ pkgs.util-linux ];
     script = ''
       for d in /tank /vault; do
         for i in $(seq 1 30); do

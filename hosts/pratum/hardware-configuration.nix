@@ -40,13 +40,16 @@
   fileSystems."/tank" =
     { device = "merrick-g";
       fsType = "zfs";
+      # zfsutil: mount via `zfs mount` (dataset uses a native ZFS mountpoint,
+      # plain mount(8) refuses it)
+      options = [ "zfsutil" ];
     };
 
   fileSystems."/vault" =
     { device = "vault";
       fsType = "zfs";
       # Mounted manually after unlocking in KDE (keys live in the password manager)
-      options = [ "noauto" ];
+      options = [ "zfsutil" "noauto" ];
     };
 
   boot.zfs.extraPools = [ "merrick-g" "vault" ];
