@@ -71,6 +71,9 @@
     flake = "/home/helianthus/Documents/dotfiles";
   };
 
+  systemd.services."zfs-sync-merry-g".enable = false;
+  systemd.services."zfs-sync-vault".enable = false;
+
   systemd.mounts = [
     {
       where = "/mnt/mireo-data";
