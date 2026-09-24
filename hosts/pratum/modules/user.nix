@@ -8,7 +8,6 @@
     packages = with pkgs; [
       kdePackages.kate
       prismlauncher
-      git
       keepassxc
       thunderbird
       vlc
@@ -23,7 +22,6 @@
       xenia-canary
       motrix
       opencode
-      nodejs
       pkgs.jetbrains.clion
       pkgs.jetbrains.idea
       pkgs.jetbrains.webstorm
@@ -32,17 +30,10 @@
       pkgs.jetbrains.ruby-mine
       pkgs.jetbrains.goland
       pkgs.jetbrains.datagrip
-      telegram-desktop
-      (discord.override {
-        withOpenASAR = true;
-        withVencord = true;
-      })
-      signal-desktop
       slack
       element-desktop
     ];
   };
 
   programs.firefox.enable = true;
-  nixpkgs.config.allowUnfree = true;
 }

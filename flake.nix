@@ -9,15 +9,12 @@
     };
   };
 
-  outputs = inputs @ {
-    self,
-    nixpkgs,
-    home-manager,
-    ...
-  }: {
+  outputs = { self, nixpkgs, home-manager, ... }: {
     nixosConfigurations.pratum = nixpkgs.lib.nixosSystem {
-      specialArgs = { inherit inputs; };
-      modules = [ ./hosts/pratum/configuration.nix ];
+      modules = [
+        ./hosts/pratum/configuration.nix
+        home-manager.nixosModules.home-manager
+      ];
     };
   };
 }

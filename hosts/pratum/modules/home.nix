@@ -6,7 +6,6 @@
   home.username = "helianthus";
   home.homeDirectory = "/home/helianthus";
   home.stateVersion = "26.05";
-  # HM 26.05 vs nixpkgs 26.11 release mismatch warning suppressed
   home.enableNixpkgsReleaseCheck = false;
 
   programs.obsidian = {
