@@ -5,9 +5,11 @@
 
   nixpkgs.config.allowUnfree = true;
 
+  boot.loader.systemd-boot.enable = false;
   boot.loader.grub = {
     enable = true;
-    devices = [ "/boot/efi" ];
+    devices = [ "nodev" ];
+    efiSupport = true;
     useOSProber = true;
   };
   boot.loader.efi.canTouchEfiVariables = true;
@@ -75,7 +77,7 @@
     flake = "/home/helianthus/Documents/dotfiles";
   };
 
-  systemd.services."zfs-sync-merry-g".enable = false;
+  systemd.services."zfs-sync-merrick-g".enable = false;
   systemd.services."zfs-sync-vault".enable = false;
 
   systemd.mounts = [
@@ -126,6 +128,41 @@
   environment.systemPackages = with pkgs; [
     nodejs
     zfs
+    (writeShellScriptBin "zfs-unlock" ''
+      # Unlock the encrypted vault pool (key pasted from the password
+      # manager), mount /vault, fix pool-root ownership.
+      # merrick-g (/tank, unencrypted, holds the KeePass database) is
+      # already mounted at boot. Safe to re-run. Run in a terminal (Konsole).
+      set -euo pipefail
+
+      if [[ $EUID -ne 0 ]]; then
+        exec sudo "$0" "$@"
+      fi
+
+      # The pool is normally already imported at boot (boot.zfs.extraPools),
+      # but import it on demand if needed.
+      if ! zpool list -H -o name vault >/dev/null 2>&1; then
+        echo "importing ZFS pool vault..."
+        zpool import -d /dev/disk/by-id -N vault
+      fi
+
+      # Load keys for locked datasets with keylocation=prompt.
+      # Redirect from /dev/tty so the passphrase is read from the terminal
+      # (stdin carries the dataset list from the pipe).
+      zfs list -rHo name,keylocation,keystatus -t volume,filesystem vault | while IFS=$'\t' read -r ds kl ks; do
+        if [[ "$kl" == "prompt" && "$ks" == "unavailable" ]]; then
+          echo "loading key for $ds (paste from password manager)..."
+          zfs load-key "$ds" < /dev/tty
+        fi
+      done
+
+      systemctl start vault.mount
+      systemctl restart zfs-user-permissions
+
+      echo "---"
+      mountpoint -q /tank && echo "/tank mounted" || echo "/tank NOT mounted"
+      mountpoint -q /vault && echo "/vault mounted" || echo "/vault NOT mounted"
+    '')
     vulkan-loader
     mesa
     SDL2
@@ -160,6 +197,7 @@
     atuin
     starship
     ripgrep
+    git
     lazygit
     gh
     rustc

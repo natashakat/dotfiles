@@ -6,7 +6,6 @@
   boot.initrd.availableKernelModules = [ "ahci" "xhci_pci" "virtio_pci" "sr_mod" "virtio_blk" "zfs" ];
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ "kvm-intel" "zfs" ];
-  boot.extraModulePackages = [ pkgs.zfs ];
   boot.supportedFilesystems.zfs = true;
   boot.initrd.supportedFilesystems.zfs = true;
 
@@ -39,19 +38,23 @@
     };
 
   fileSystems."/tank" =
-    { device = "merry-g";
+    { device = "merrick-g";
       fsType = "zfs";
     };
 
   fileSystems."/vault" =
     { device = "vault";
       fsType = "zfs";
+      # Mounted manually after unlocking in KDE (keys live in the password manager)
+      options = [ "noauto" ];
     };
 
-  boot.zfs.extraPools = [ "merry-g" "vault" ];
+  boot.zfs.extraPools = [ "merrick-g" "vault" ];
   # Explicit true silences warning; required while forceImportAll is set
   boot.zfs.forceImportRoot = true;
-  boot.zfs.requestEncryptionCredentials = true;
+  # No boot-time key prompt: keys are unlocked later in KDE from the password manager.
+  # Pools still import at boot, encrypted datasets simply stay locked until then.
+  boot.zfs.requestEncryptionCredentials = false;
   boot.zfs.useKeyringForCredentials = true;
   boot.zfs.forceImportAll = true;
 
