@@ -11,6 +11,7 @@
     devices = [ "nodev" ];
     efiSupport = true;
     useOSProber = true;
+    theme = pkgs.catppuccin-grub;
   };
   boot.loader.efi.canTouchEfiVariables = true;
 
@@ -208,6 +209,11 @@
     nix-index
     nixfmt
     jetbrains-mono
+    # WhiteSur desktop theme (matches the KDE config in home.nix)
+    whitesur-kde
+    whitesur-icon-theme
+    whitesur-gtk-theme
+    whitesur-cursors
     wl-clipboard
     typescript
     prettier

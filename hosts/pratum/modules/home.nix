@@ -20,9 +20,67 @@
     };
   };
 
-  programs.git.enable = true;
-  programs.git.settings.user.name = "helianthus";
-  programs.git.settings.user.email = "helianthus@pratum";
+  programs.git = {
+    enable = true;
+    settings = {
+      user.name = "helianthus";
+      user.email = "helianthus@pratum";
+      init.defaultBranch = "main";
+      pull.rebase = true;
+      push.autoSetupRemote = true;
+      core.editor = "hx";
+      alias = {
+        st = "status -sb";
+        co = "checkout";
+        br = "branch";
+        lg = "log --oneline --graph -15";
+      };
+    };
+  };
+
+  programs.helix = {
+    enable = true;
+    defaultEditor = true;
+    settings = {
+      theme = "catppuccin_mocha";
+      editor = {
+        line-number = "relative";
+        cursorline = true;
+        bufferline = "multiple";
+        indent-guides.render = true;
+        soft-wrap.enable = true;
+        file-picker.hidden = false;
+        lsp.display-messages = true;
+      };
+    };
+    languages = {
+      language-server.rust-analyzer.command = "rust-analyzer";
+      language-server.nil.command = "nil";
+      language = [
+        {
+          name = "nix";
+          auto-format = true;
+          formatter = { command = "nixfmt"; };
+        }
+        {
+          name = "rust";
+          auto-format = true;
+        }
+      ];
+    };
+  };
+
+  programs.neovim = {
+    enable = true;
+    viAlias = true;
+    vimAlias = true;
+    extraConfig = ''
+      set number relativenumber
+      set expandtab shiftwidth=2 tabstop=2
+      set termguicolors
+      set mouse=a
+    '';
+  };
 
   programs.vscodium = {
     enable = true;
@@ -66,7 +124,96 @@
       };
     };
   };
-  programs.bash.enable = true;
+  programs.bash = {
+    enable = true;
+    shellAliases = {
+      ls = "eza";
+      ll = "eza -l";
+      la = "eza -la";
+      tree = "eza --tree";
+      cat = "bat";
+      grep = "rg";
+      find = "fd";
+      rb = "nixos-rebuild switch --flake ~/Documents/dotfiles --use-remote-sudo";
+      rbtest = "nixos-rebuild test --flake ~/Documents/dotfiles --use-remote-sudo";
+    };
+    initExtra = ''
+      eval "$(starship init bash)"
+    '';
+  };
+
+  programs.starship = {
+    enable = true;
+    settings = {
+      format = "$directory$git_branch$git_status$nix_shell$character";
+      palette = "catppuccin_mocha";
+      palettes.catppuccin_mocha = {
+        rosewater = "#f5e0dc";
+        flamingo = "#f2cdcd";
+        pink = "#f5c2e7";
+        mauve = "#cba6f7";
+        red = "#f38ba8";
+        maroon = "#eba0ac";
+        peach = "#fab387";
+        yellow = "#f9e2af";
+        green = "#a6e3a1";
+        teal = "#94e2d5";
+        sky = "#89dceb";
+        sapphire = "#74c7ec";
+        blue = "#89b4fa";
+        lavender = "#b4befe";
+        text = "#cdd6f4";
+        subtext1 = "#bac2de";
+        subtext0 = "#a6adc8";
+        overlay2 = "#9399b2";
+        overlay1 = "#7f849c";
+        overlay0 = "#6c7086";
+        surface2 = "#585b70";
+        surface1 = "#45475a";
+        surface0 = "#313244";
+        base = "#1e1e2e";
+        mantle = "#181825";
+        crust = "#11111b";
+      };
+      directory = {
+        style = "blue";
+        truncation_length = 3;
+      };
+      git_branch = {
+        style = "mauve";
+      };
+      nix_shell = {
+        symbol = "❄️ ";
+      };
+      character = {
+        success_symbol = "[➜](green)";
+        error_symbol = "[➜](red)";
+      };
+    };
+  };
+
+  programs.zoxide = {
+    enable = true;
+    enableBashIntegration = true;
+  };
+
+  programs.atuin = {
+    enable = true;
+    enableBashIntegration = true;
+  };
+
+  programs.fzf = {
+    enable = true;
+    enableBashIntegration = true;
+  };
+
+  programs.eza = {
+    enable = true;
+  };
+
+  programs.bat = {
+    enable = true;
+  };
 
   xdg.userDirs = {
     enable = true;
@@ -108,6 +255,12 @@
       [org.kde.kdecoration2]
       library=org.kde.kwin.aurorae.v2
       theme=__aurorae__svg__WhiteSurLiquid-dark
+
+      [NightColor]
+      Active=true
+      LatitudeFixed=52.37
+      LongitudeFixed=4.91
+      Mode=Location
     '';
 
     "kdeglobals".text = ''
@@ -119,6 +272,19 @@
       ForegroundActive=61,174,233
       ForegroundInactive=170,170,170
       ForegroundLink=41,128,185
+
+      [General]
+      font=Noto Sans,10,-1,0,50,0,0,0,0,0
+      fixed=JetBrains Mono,12,-1,5,50,0,0,0,0,0
+
+      [Icons]
+      Theme=WhiteSur-dark
+    '';
+
+    "kcminputrc".text = ''
+      [Mouse]
+      cursorTheme=WhiteSur-cursors
+      cursorSize=24
     '';
 
     "kate/katerc".text = ''
@@ -126,27 +292,28 @@
 
     "gtk-3.0/settings.ini".text = ''
       [Settings]
-      gtk-application-prefer-dark-theme=false
+      gtk-application-prefer-dark-theme=true
       gtk-button-images=true
       gtk-cursor-blink=true
       gtk-cursor-blink-time=1000
-      gtk-cursor-theme-name=MacTahoe-dark
+      gtk-cursor-theme-name=WhiteSur-cursors
       gtk-cursor-theme-size=24
       gtk-decoration-layout=icon:minimize,maximize,close
       gtk-enable-animations=true
       gtk-font-name=Noto Sans, 10
-      gtk-icon-theme-name=MacTahoe-dark
+      gtk-icon-theme-name=WhiteSur-dark
       gtk-menu-images=true
       gtk-modules=colorreload-gtk-module
       gtk-primary-button-warps-slider=true
       gtk-sound-theme-name=ocean
+      gtk-theme-name=WhiteSur-Dark
       gtk-toolbar-style=3
       gtk-xft-dpi=98304
     '';
 
     "gtkrc-2.0".text = ''
       gtk-enable-animations=1
-      gtk-theme-name=""
+      gtk-theme-name="WhiteSur-Dark"
       gtk-primary-button-warps-slider=1
       gtk-toolbar-style=3
       gtk-menu-images=1
@@ -154,9 +321,9 @@
       gtk-cursor-blink-time=1000
       gtk-cursor-blink=1
       gtk-cursor-theme-size=24
-      gtk-cursor-theme-name="MacTahoe-dark"
+      gtk-cursor-theme-name="WhiteSur-cursors"
       gtk-sound-theme-name=ocean
-      gtk-icon-theme-name=MacTahoe-dark
+      gtk-icon-theme-name=WhiteSur-dark
       gtk-font-name=Noto Sans,  10
     '';
 
@@ -166,6 +333,87 @@
       x-scheme-handler/mo=motrix.desktop
       x-scheme-handler/motrix=motrix.desktop
       x-scheme-handler/magnet=motrix.desktop
+    '';
+
+    "konsolerc".text = ''
+      [Desktop Entry]
+      DefaultProfile=Catppuccin-Mocha.profile
+    '';
+
+    "konsole/Catppuccin-Mocha.profile".text = ''
+      [General]
+      Name=Catppuccin-Mocha
+      Parent=FALLBACK/
+
+      [Appearance]
+      ColorScheme=Catppuccin-Mocha
+      Font=JetBrains Mono,12,-1,5,50,0,0,0,0,0
+    '';
+
+    "konsole/Catppuccin-Mocha.colorscheme".text = ''
+      [Background]
+      Color=30,30,46
+
+      [BackgroundIntense]
+      Color=49,50,68
+
+      [Color0]
+      Color=69,71,90
+
+      [Color0Intense]
+      Color=88,91,112
+
+      [Color1]
+      Color=243,139,168
+
+      [Color1Intense]
+      Color=243,139,168
+
+      [Color2]
+      Color=166,227,161
+
+      [Color2Intense]
+      Color=166,227,161
+
+      [Color3]
+      Color=249,226,175
+
+      [Color3Intense]
+      Color=249,226,175
+
+      [Color4]
+      Color=137,180,250
+
+      [Color4Intense]
+      Color=137,180,250
+
+      [Color5]
+      Color=245,194,231
+
+      [Color5Intense]
+      Color=245,194,231
+
+      [Color6]
+      Color=148,226,213
+
+      [Color6Intense]
+      Color=148,226,213
+
+      [Color7]
+      Color=186,194,222
+
+      [Color7Intense]
+      Color=166,173,200
+
+      [Foreground]
+      Color=205,214,244
+
+      [ForegroundIntense]
+      Color=205,214,244
+
+      [General]
+      Description=Catppuccin Mocha
+      Opacity=1
     '';
   };
 
