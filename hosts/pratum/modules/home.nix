@@ -269,6 +269,7 @@
     enable = true;
     workspace = {
       theme = "WhiteSur-dark";
+      lookAndFeel = "com.github.vinceliuice.WhiteSur-dark";
       colorScheme = "WhiteSurDark";
       iconTheme = "WhiteSur-dark";
       cursor = {
@@ -277,6 +278,7 @@
       };
       wallpaper = "${pkgs.whitesur-kde}/share/wallpapers/WhiteSur-dark/contents/images/3840x2160.jpg";
     };
+    kscreenlocker.appearance.wallpaper = "${pkgs.whitesur-kde}/share/wallpapers/WhiteSur-dark/contents/images/3840x2160.jpg";
     fonts = {
       general = {
         family = "Noto Sans";
@@ -314,10 +316,6 @@
           };
         };
       };
-    };
-    configFile.kwinrc."org.kde.kdecoration2" = {
-      library = "org.kde.kwin.aurorae.v2";
-      theme = "__aurorae__svg__WhiteSur-dark";
     };
     shortcuts = {
       kmix = {
