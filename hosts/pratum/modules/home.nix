@@ -140,6 +140,9 @@
     initExtra = ''
       eval "$(starship init bash)"
     '';
+    sessionVariables = {
+      FZF_DEFAULT_OPTS = "--color=bg:#1e1e2e,fg:#cdd6f4,hl:#f5c2e7,fg+:#cdd6f4,bg+:#45475a,hl+:#f5c2e7,info:#cba6f7,prompt:#cba6f7,pointer:#f5c2e7,marker:#f5c2e7,spinner:#f5c2e7,header:#f5c2e7";
+    };
   };
 
   programs.starship = {
@@ -213,7 +216,38 @@
 
   programs.bat = {
     enable = true;
+    config = {
+      theme = "Catppuccin Mocha";
+    };
   };
+
+  xdg.configFile."fastfetch/config.jsonc".text = ''
+    {
+      "logo": {
+        "type": "auto"
+      },
+      "display": {
+        "separator": " ➜ "
+      },
+      "modules": [
+        "os",
+        "host",
+        "kernel",
+        "uptime",
+        "packages",
+        "shell",
+        "de",
+        "wm",
+        "terminal",
+        "cpu",
+        "memory",
+        "disk",
+        "battery",
+        "break",
+        "colors"
+      ]
+    }
+  '';
 
   xdg.userDirs = {
     enable = true;
@@ -284,6 +318,20 @@
     configFile.kwinrc."org.kde.kdecoration2" = {
       library = "org.kde.kwin.aurorae.v2";
       theme = "__aurorae__svg__WhiteSur-dark";
+    };
+    shortcuts = {
+      kmix = {
+        decrease_volume = "Volume Down";
+        increase_volume = "Volume Up";
+        mute = "Volume Mute";
+      };
+      kwin = {
+        "Show Desktop" = "Meta+D";
+      };
+    };
+    kwin.effects = {
+      blur.enable = true;
+      translucency.enable = true;
     };
   };
 

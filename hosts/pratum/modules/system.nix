@@ -214,6 +214,7 @@
     whitesur-icon-theme
     whitesur-gtk-theme
     whitesur-cursors
+    catppuccin-sddm
     wl-clipboard
     typescript
     prettier
