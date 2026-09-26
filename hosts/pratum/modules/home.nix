@@ -535,6 +535,105 @@
       Description=Catppuccin Mocha
       Opacity=1
     '';
+
+    # opencode MCP servers (binaries come from system.nix via nix, no npx).
+    # This takes over ~/.config/opencode/opencode.jsonc (old file -> .backup).
+    "opencode/opencode.jsonc".text = ''
+      {
+        "$schema": "https://opencode.ai/config.json",
+        "mcp": {
+          "nixos": {
+            "type": "local",
+            "command": ["mcp-nixos"],
+            "enabled": true
+          },
+          "filesystem": {
+            "type": "local",
+            "command": ["mcp-server-filesystem", "/home/helianthus/Documents", "/home/helianthus/Documents/dotfiles", "/vault", "/merrick-g"],
+            "enabled": true
+          },
+          "git": {
+            "type": "local",
+            "command": ["mcp-server-git"],
+            "enabled": true
+          },
+          "github": {
+            "type": "local",
+            "command": ["github-mcp-server", "stdio"],
+            "enabled": true,
+            "environment": {
+              "GITHUB_PERSONAL_ACCESS_TOKEN": "{env:GITHUB_PERSONAL_ACCESS_TOKEN}"
+            }
+          },
+          "fetch": {
+            "type": "local",
+            "command": ["mcp-server-fetch"],
+            "enabled": true
+          },
+          "context7": {
+            "type": "local",
+            "command": ["context7-mcp"],
+            "enabled": true,
+            "environment": {
+              "CONTEXT7_API_KEY": "{env:CONTEXT7_API_KEY}"
+            }
+          },
+          "memory": {
+            "type": "local",
+            "command": ["mcp-server-memory"],
+            "enabled": true
+          },
+          "time": {
+            "type": "local",
+            "command": ["mcp-server-time", "--local-timezone", "Europe/Amsterdam"],
+            "enabled": true
+          },
+          "sequential-thinking": {
+            "type": "local",
+            "command": ["mcp-server-sequential-thinking"],
+            "enabled": true
+          },
+          "playwright": {
+            "type": "local",
+            "command": ["playwright-mcp", "--browser", "chromium", "--isolated"],
+            "enabled": true
+          },
+          "firefox-devtools": {
+            "type": "local",
+            "command": ["firefox-devtools-mcp"],
+            "enabled": true
+          },
+          "thunderbird": {
+            "type": "local",
+            "command": ["thunderbird-mcp"],
+            "enabled": true
+          },
+          "markitdown": {
+            "type": "local",
+            "command": ["markitdown-mcp"],
+            "enabled": true
+          },
+          "language-server": {
+            "type": "local",
+            "command": ["mcp-language-server", "-lsp", "nil", "-workspace", "/home/helianthus/Documents/dotfiles"],
+            "enabled": true
+          },
+          "searxng": {
+            "type": "local",
+            "command": ["mcp-searxng"],
+            "enabled": true,
+            "environment": {
+              "SEARXNG_URL": "https://search.gelbetasse.org"
+            }
+          },
+          "websearch": {
+            "type": "local",
+            "command": ["open-websearch"],
+            "enabled": true
+          }
+        }
+      }
+    '';
   };
 
   programs.thunderbird.enable = true;

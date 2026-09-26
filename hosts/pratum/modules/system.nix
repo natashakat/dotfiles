@@ -255,5 +255,22 @@
     prettier
     eslint
     pnpm
+    # MCP servers for opencode (via nix, no npx/uvx)
+    mcp-nixos
+    mcp-server-filesystem
+    mcp-server-git
+    mcp-server-fetch
+    mcp-server-memory
+    mcp-server-time
+    mcp-server-sequential-thinking
+    context7-mcp
+    github-mcp-server
+    playwright-mcp
+    firefox-devtools-mcp
+    thunderbird-mcp
+    markitdown-mcp
+    mcp-language-server
+    mcp-searxng
+    open-websearch
   ];
 }
