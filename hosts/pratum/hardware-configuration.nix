@@ -37,14 +37,9 @@
       fsType = "ext4";
     };
 
-  fileSystems."/tank" =
-    { device = "merrick-g";
-      fsType = "zfs";
-      # zfsutil: mount via `zfs mount` (dataset uses a native ZFS mountpoint,
-      # plain mount(8) refuses it)
-      options = [ "zfsutil" ];
-    };
-
+  # merrick-g bewusst nicht in fileSystems: ZFS mountet nativ via
+  # zfs-mount.service (`zfs mount -a`) nach /merrick-g, kein Mount Unit noetig.
+  # Bei Bedarf mountet der zfs-unlock Befehl nach. Siehe modules/system.nix.
   fileSystems."/vault" =
     { device = "vault";
       fsType = "zfs";

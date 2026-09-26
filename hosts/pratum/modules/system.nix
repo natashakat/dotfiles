@@ -59,16 +59,23 @@
   virtualisation.libvirtd.enable = true;
   programs.virt-manager.enable = true;
 
-  security.run0 = {
-    enable = true;
-    sudo-shim.enable = true;
-  };
-
-  security.sudo.enable = false;
+  security.sudo.enable = true;
   security.sudo-rs.enable = false;
 
   programs.steam = {
     enable = true;
+  };
+  hardware.steam-hardware.enable = true;
+
+  # 32-Bit-Mesa für Steam/Proton/ältere Wine-Spiele. AMD braucht sonst nichts.
+  hardware.graphics.enable32Bit = true;
+
+  programs.gamemode.enable = true;
+  programs.gamescope.enable = true;
+
+  services.mullvad-vpn = {
+    enable = true;
+    gui.enable = true;
   };
 
   programs.nh = {
@@ -81,25 +88,14 @@
   systemd.services."zfs-sync-merrick-g".enable = false;
   systemd.services."zfs-sync-vault".enable = false;
 
-  systemd.mounts = [
-    {
-      where = "/mnt/mireo-data";
-      what = "mireo:/data";
-      type = "nfs";
-      options = "noauto,nofail,_netdev";
-    }
-  ];
+  # NFS-Client: zieht nfs-utils (mount.nfs), rpcbind, idmapd rein.
+  boot.supportedFilesystems.nfs = true;
 
-  systemd.automounts = [
-    {
-      where = "/mnt/mireo-data";
-      wantedBy = [ "remote-fs.target" ];
-      automountConfig = {
-        TimeoutIdleSec = 600;
-        DirectoryMode = "0755";
-      };
-    }
-  ];
+  fileSystems."/mnt/mireo-data" = {
+    device = "mireo:/data";
+    fsType = "nfs";
+    options = [ "x-systemd.automount" "noauto" "nofail" "_netdev" "x-systemd.idle-timeout=600" ];
+  };
 
   systemd.tmpfiles.rules = [
     "d /mnt/mireo-data 0755 root root -"
@@ -114,7 +110,7 @@
     serviceConfig.RemainAfterExit = true;
     path = [ pkgs.util-linux ];
     script = ''
-      for d in /tank /vault; do
+      for d in /merrick-g /vault; do
         for i in $(seq 1 30); do
           mountpoint -q "$d" && break
           sleep 1
@@ -131,39 +127,52 @@
     nodejs
     zfs
     (writeShellScriptBin "zfs-unlock" ''
-      # Unlock the encrypted vault pool (key pasted from the password
-      # manager), mount /vault, fix pool-root ownership.
-      # merrick-g (/tank, unencrypted, holds the KeePass database) is
-      # already mounted at boot. Safe to re-run. Run in a terminal (Konsole).
+      # Pools bei Bedarf importieren, vault Keys laden (Keys aus
+      # Passwortmanager), /vault + Kinder mounten, Rechte fixen.
+      # /merrick-g (unencrypted) mountet normal schon beim Boot via
+      # zfs-mount.service (`zfs mount -a`). vault bleibt bis hier
+      # gesperrt (kein Boot-Prompt). Safe re-run. Im Terminal (Konsole)
+      # laufen lassen.
       set -euo pipefail
 
       if [[ $EUID -ne 0 ]]; then
         exec sudo "$0" "$@"
       fi
 
-      # The pool is normally already imported at boot (boot.zfs.extraPools),
-      # but import it on demand if needed.
+      # Pools importieren falls noetig (extraPools importiert beim Boot,
+      # aber hier robust fuer manuellen Lauf).
+      if ! zpool list -H -o name merrick-g >/dev/null 2>&1; then
+        echo "importing ZFS pool merrick-g..."
+        zpool import -d /dev/disk/by-id -N merrick-g
+      fi
+
       if ! zpool list -H -o name vault >/dev/null 2>&1; then
         echo "importing ZFS pool vault..."
         zpool import -d /dev/disk/by-id -N vault
       fi
 
-      # Load keys for locked datasets with keylocation=prompt.
-      # Redirect from /dev/tty so the passphrase is read from the terminal
-      # (stdin carries the dataset list from the pipe).
-      zfs list -rHo name,keylocation,keystatus -t volume,filesystem vault | while IFS=$'\t' read -r ds kl ks; do
+      # Unencrypted zuerst mounten. vault folgt nach Key-Load.
+      zfs mount -a || true
+
+      # Keys laden fuer gesperrte Datasets mit keylocation=prompt.
+      # Von /dev/tty lesen, da stdin die Dataset-Liste aus der Pipe traegt.
+      echo "loading vault keys (paste from password manager)..."
+      zfs list -rHo name,keylocation,keystatus -t filesystem,volume vault | while IFS=$'\t' read -r ds kl ks; do
         if [[ "$kl" == "prompt" && "$ks" == "unavailable" ]]; then
-          echo "loading key for $ds (paste from password manager)..."
+          echo "loading key for $ds..."
           zfs load-key "$ds" < /dev/tty
         fi
       done
 
+      # Root via Unit mounten (noauto), Kinder nativ (Keys jetzt geladen).
       systemctl start vault.mount
+      zfs mount -a || true
       systemctl restart zfs-user-permissions
 
       echo "---"
-      mountpoint -q /tank && echo "/tank mounted" || echo "/tank NOT mounted"
+      mountpoint -q /merrick-g && echo "/merrick-g mounted" || echo "/merrick-g NOT mounted"
       mountpoint -q /vault && echo "/vault mounted" || echo "/vault NOT mounted"
+      zfs list -rHo name,keystatus,mounted vault
     '')
     vulkan-loader
     mesa
@@ -181,7 +190,7 @@
     openscad
     freecad
     telegram-desktop
-    discord
+    vesktop
     signal-desktop
     lazydocker
     direnv
@@ -191,6 +200,8 @@
     bat
     fd
     fzf
+    jq
+    vivid
     zoxide
     zellij
     tmux
@@ -205,15 +216,39 @@
     rustc
     cargo
     rust-analyzer
+    # Toolchains für JetBrains IDEs (ohne dev-shell nutzbar)
+    gcc
+    gnumake
+    gdb
+    go
+    jdk
+    maven
+    gradle
+    ruby
+    bundler
+    php
+    phpPackages.composer
+    uv
     nil
     nix-index
+    comma
     nixfmt
     jetbrains-mono
-    # WhiteSur desktop theme (matches the KDE config in home.nix)
-    whitesur-kde
-    whitesur-icon-theme
-    whitesur-gtk-theme
-    whitesur-cursors
+    # Catppuccin Mocha Mauve desktop theme (matches Plasma/GTK config in home.nix)
+    (catppuccin-kde.override {
+      flavour = [ "mocha" ];
+      accents = [ "mauve" ];
+    })
+    (catppuccin-gtk.override {
+      accents = [ "mauve" ];
+      variant = "mocha";
+    })
+    (catppuccin-papirus-folders.override {
+      flavor = "mocha";
+      accent = "mauve";
+    })
+    papirus-icon-theme
+    catppuccin-cursors.mochaMauve
     catppuccin-sddm
     wl-clipboard
     typescript

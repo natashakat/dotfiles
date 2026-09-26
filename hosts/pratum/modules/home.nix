@@ -94,9 +94,26 @@
         editorconfig.editorconfig
         esbenp.prettier-vscode
         eamodio.gitlens
+        mhutchie.git-graph
         usernamehw.errorlens
         catppuccin.catppuccin-vsc
         pkief.material-icon-theme
+        (pkgs.vscode-utils.buildVscodeMarketplaceExtension {
+          mktplcRef = {
+            name = "qt-qml";
+            publisher = "TheQtCompany";
+            version = "1.17.0";
+            sha256 = "sha256-4P0v3r1pHgLKR7Jt3Je3kBHSwVZ2djWlxQOmAbTsM/0=";
+          };
+        })
+        (pkgs.vscode-utils.buildVscodeMarketplaceExtension {
+          mktplcRef = {
+            name = "qt-core";
+            publisher = "TheQtCompany";
+            version = "1.17.0";
+            sha256 = "sha256-knBG17lcrr3NP5sxMtbgG6coiEM//caEeei2NWKfJVk=";
+          };
+        })
       ];
       userSettings = {
         "workbench.colorTheme" = "Catppuccin Mocha";
@@ -139,6 +156,7 @@
     };
     initExtra = ''
       eval "$(starship init bash)"
+      export LS_COLORS="$(vivid generate catppuccin-mocha)"
     '';
     sessionVariables = {
       FZF_DEFAULT_OPTS = "--color=bg:#1e1e2e,fg:#cdd6f4,hl:#f5c2e7,fg+:#cdd6f4,bg+:#45475a,hl+:#f5c2e7,info:#cba6f7,prompt:#cba6f7,pointer:#f5c2e7,marker:#f5c2e7,spinner:#f5c2e7,header:#f5c2e7";
@@ -221,13 +239,53 @@
     };
   };
 
+  programs.btop = {
+    enable = true;
+    settings = {
+      color_theme = "catppuccin_mocha";
+    };
+  };
+
+  programs.tmux = {
+    enable = true;
+    extraConfig = ''
+      set -g status-style 'bg=#1e1e2e,fg=#cdd6f4'
+      set -g status-left '#[fg=#cba6f7,bold] #S '
+      set -g status-right '#[fg=#94e2d5]%H:%M #[fg=#6c7086]| #[fg=#cdd6f4]%d-%m '
+      set -g window-status-current-style 'fg=#1e1e2e,bg=#cba6f7,bold'
+      set -g window-status-style 'fg=#a6adc8'
+      set -g pane-border-style 'fg=#45475a'
+      set -g pane-active-border-style 'fg=#cba6f7'
+      set -g message-style 'bg=#313244,fg=#cdd6f4'
+      set -g mode-style 'bg=#45475a,fg=#cdd6f4'
+    '';
+  };
+
+  programs.zellij = {
+    enable = true;
+    settings = {
+      theme = "catppuccin-mocha";
+    };
+    themes = {
+      catppuccin = pkgs.fetchurl {
+        url = "https://raw.githubusercontent.com/catppuccin/zellij/main/catppuccin.kdl";
+        sha256 = "sha256-Np7k/lsmue437aPZh6RZcOt03haLedJlOCaZ8+4nCoo=";
+      };
+    };
+  };
+
   xdg.configFile."fastfetch/config.jsonc".text = ''
     {
       "logo": {
         "type": "auto"
       },
       "display": {
-        "separator": " ➜ "
+        "separator": " ➜ ",
+        "color": {
+          "keys": "#cba6f7",
+          "title": "#f5c2e7",
+          "separator": "#6c7086"
+        }
       },
       "modules": [
         "os",
@@ -268,17 +326,17 @@
   programs.plasma = {
     enable = true;
     workspace = {
-      theme = "WhiteSur-dark";
-      lookAndFeel = "com.github.vinceliuice.WhiteSur-dark";
-      colorScheme = "WhiteSurDark";
-      iconTheme = "WhiteSur-dark";
+      theme = "breeze-dark";
+      lookAndFeel = "Catppuccin-Mocha-Mauve";
+      colorScheme = "CatppuccinMochaMauve";
+      iconTheme = "Papirus-Dark";
       cursor = {
-        theme = "WhiteSur-cursors";
+        theme = "catppuccin-mocha-mauve-cursors";
         size = 24;
       };
-      wallpaper = "${pkgs.whitesur-kde}/share/wallpapers/WhiteSur-dark/contents/images/3840x2160.jpg";
+      wallpaper = "${../../../assets/wallpaper.webp}";
     };
-    kscreenlocker.appearance.wallpaper = "${pkgs.whitesur-kde}/share/wallpapers/WhiteSur-dark/contents/images/3840x2160.jpg";
+    kscreenlocker.appearance.wallpaper = "${../../../assets/wallpaper.webp}";
     fonts = {
       general = {
         family = "Noto Sans";
@@ -348,24 +406,24 @@
       gtk-button-images=true
       gtk-cursor-blink=true
       gtk-cursor-blink-time=1000
-      gtk-cursor-theme-name=WhiteSur-cursors
+      gtk-cursor-theme-name=catppuccin-mocha-mauve-cursors
       gtk-cursor-theme-size=24
       gtk-decoration-layout=icon:minimize,maximize,close
       gtk-enable-animations=true
       gtk-font-name=Noto Sans, 10
-      gtk-icon-theme-name=WhiteSur-dark
+      gtk-icon-theme-name=Papirus-Dark
       gtk-menu-images=true
       gtk-modules=colorreload-gtk-module
       gtk-primary-button-warps-slider=true
       gtk-sound-theme-name=ocean
-      gtk-theme-name=WhiteSur-Dark
+      gtk-theme-name=catppuccin-mocha-mauve-standard
       gtk-toolbar-style=3
       gtk-xft-dpi=98304
     '';
 
     "gtkrc-2.0".text = ''
       gtk-enable-animations=1
-      gtk-theme-name="WhiteSur-Dark"
+      gtk-theme-name="catppuccin-mocha-mauve-standard"
       gtk-primary-button-warps-slider=1
       gtk-toolbar-style=3
       gtk-menu-images=1
@@ -373,9 +431,9 @@
       gtk-cursor-blink-time=1000
       gtk-cursor-blink=1
       gtk-cursor-theme-size=24
-      gtk-cursor-theme-name="WhiteSur-cursors"
+      gtk-cursor-theme-name="catppuccin-mocha-mauve-cursors"
       gtk-sound-theme-name=ocean
-      gtk-icon-theme-name=WhiteSur-dark
+      gtk-icon-theme-name=Papirus-Dark
       gtk-font-name=Noto Sans,  10
     '';
 
@@ -391,6 +449,16 @@
       [Desktop Entry]
       DefaultProfile=Catppuccin-Mocha.profile
     '';
+
+    "vesktop/themes/catppuccin-mocha-mauve.theme.css".source = pkgs.fetchurl {
+      url = "https://catppuccin.github.io/discord/dist/catppuccin-mocha-mauve.theme.css";
+      sha256 = "sha256-kX6O2wxQpZvCF2RjsP4yH+Ojvijd8KJ/uCVu/VObTOg=";
+    };
+
+    "btop/themes/catppuccin_mocha.theme".source = pkgs.fetchurl {
+      url = "https://github.com/catppuccin/btop/raw/main/themes/catppuccin_mocha.theme";
+      sha256 = "sha256-THRpq5vaKCwf9gaso3ycC4TNDLZtBB5Ofh/tOXkfRkQ=";
+    };
 
     "konsole/Catppuccin-Mocha.profile".text = ''
       [General]
