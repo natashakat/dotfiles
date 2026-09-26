@@ -5,6 +5,7 @@ AGENTS.md
 vault/notes/*.md
 vault/.obsidian/workspace*
 vault/.obsidian/graph.json
+vault/.obsidian/themes/
 
 # Nix store
 *.nix-store

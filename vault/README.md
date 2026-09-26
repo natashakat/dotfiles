@@ -17,8 +17,8 @@ vault/
 ## Configuration
 
 - **Theme**: Dark
-- **Core Plugins**: backlink, page-preview, tag-pane, graph, daily-notes, editor-status, file-explorer, word-count, outline
-- **Default App**: VSCodium
+- **Core Plugins**: starred, page-preview, backlink, tag-pane, outgoing-links, word-count, mousewheel-zoom, editor-emoticons, local-resources, page-stats, bookmarks, file-explorer, global-search, switcher, graph, canvas, properties, daily-notes, templates, note-composer, command-palette, editor-status, outline, file-recovery, sync, bases
+- **Default App**: VSCodium (`defaultSettings.app = "vscodium-fhs"`)
 
 ## Notes Directory
 
@@ -26,4 +26,4 @@ vault/
 
 ## Integration
 
-This vault is managed by Home Manager via `programs.obsidian.vaults.main`.
+This vault is managed by Home Manager via `programs.obsidian.vaults.main` (`target = "Documents/dotfiles/vault"`) in `hosts/pratum/modules/home.nix`.

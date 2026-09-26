@@ -1,5 +1,16 @@
 { config, pkgs, ... }:
 
+let
+  mkQtMarketplaceExt =
+    name: version: sha256:
+    pkgs.vscode-utils.buildVscodeMarketplaceExtension {
+      mktplcRef = {
+        inherit name version sha256;
+        publisher = "TheQtCompany";
+      };
+    };
+in
+
 {
   nixpkgs.config.allowUnfree = true;
 
@@ -79,6 +90,18 @@
       set expandtab shiftwidth=2 tabstop=2
       set termguicolors
       set mouse=a
+      set background=dark
+      hi Normal guibg=#1e1e2e guifg=#cdd6f4
+      hi Comment guifg=#6c7086
+      hi Constant guifg=#fab387
+      hi String guifg=#a6e3a1
+      hi Identifier guifg=#89b4fa
+      hi Statement guifg=#cba6f7
+      hi PreProc guifg=#f5c2e7
+      hi Type guifg=#f9e2af
+      hi LineNr guifg=#45475a
+      hi CursorLineNr guifg=#cba6f7
+      hi StatusLine guibg=#313244 guifg=#cdd6f4
     '';
   };
 
@@ -98,22 +121,8 @@
         usernamehw.errorlens
         catppuccin.catppuccin-vsc
         pkief.material-icon-theme
-        (pkgs.vscode-utils.buildVscodeMarketplaceExtension {
-          mktplcRef = {
-            name = "qt-qml";
-            publisher = "TheQtCompany";
-            version = "1.17.0";
-            sha256 = "sha256-4P0v3r1pHgLKR7Jt3Je3kBHSwVZ2djWlxQOmAbTsM/0=";
-          };
-        })
-        (pkgs.vscode-utils.buildVscodeMarketplaceExtension {
-          mktplcRef = {
-            name = "qt-core";
-            publisher = "TheQtCompany";
-            version = "1.17.0";
-            sha256 = "sha256-knBG17lcrr3NP5sxMtbgG6coiEM//caEeei2NWKfJVk=";
-          };
-        })
+        (mkQtMarketplaceExt "qt-qml" "1.17.0" "sha256-4P0v3r1pHgLKR7Jt3Je3kBHSwVZ2djWlxQOmAbTsM/0=")
+        (mkQtMarketplaceExt "qt-core" "1.17.0" "sha256-knBG17lcrr3NP5sxMtbgG6coiEM//caEeei2NWKfJVk=")
       ];
       userSettings = {
         "workbench.colorTheme" = "Catppuccin Mocha";
@@ -148,6 +157,7 @@
       ll = "eza -l";
       la = "eza -la";
       tree = "eza --tree";
+      lt = "eza --tree --level=2";
       cat = "bat";
       grep = "rg";
       find = "fd";
@@ -230,6 +240,11 @@
 
   programs.eza = {
     enable = true;
+    icons = "auto";
+    git = true;
+    extraOptions = [
+      "--group-directories-first"
+    ];
   };
 
   programs.bat = {
@@ -270,6 +285,78 @@
       catppuccin = pkgs.fetchurl {
         url = "https://raw.githubusercontent.com/catppuccin/zellij/main/catppuccin.kdl";
         sha256 = "sha256-Np7k/lsmue437aPZh6RZcOt03haLedJlOCaZ8+4nCoo=";
+      };
+    };
+  };
+
+  programs.mangohud = {
+    enable = true;
+    settings = {
+      gpu_color = "94e2d5";
+      cpu_color = "cba6f7";
+      ram_color = "89b4fa";
+      engine_color = "f5c2e7";
+      io_color = "89dceb";
+      frametime_color = "a6e3a1";
+      background_alpha = "0.6";
+    };
+  };
+
+  programs.lazygit = {
+    enable = true;
+    settings = {
+      gui.theme = {
+        activeBorderColor = [ "#cba6f7" "bold" ];
+        inactiveBorderColor = [ "#45475a" ];
+        selectedLineBgColor = [ "#313244" ];
+        selectedRangeBgColor = [ "#313244" ];
+        cherryPickedCommitFgColor = [ "#94e2d5" ];
+        cherryPickedCommitBgColor = [ "#cba6f7" ];
+        markedBaseCommitFgColor = [ "#f9e2af" ];
+        markedBaseCommitBgColor = [ "#f9e2af" ];
+        unstagedChangesColor = [ "#f38ba8" ];
+        defaultFgColor = [ "#cdd6f4" ];
+      };
+    };
+  };
+
+  programs.gitui = {
+    enable = true;
+    theme = ''
+      (
+        selected_tab: Rgb(203, 166, 247),
+        command_fg: Rgb(205, 214, 244),
+        selection_bg: Rgb(69, 71, 90),
+        selection_fg: Rgb(205, 214, 244),
+        cmdbar_bg: Rgb(49, 50, 68),
+        cmdbar_extra_lines_bg: Rgb(49, 50, 68),
+        disabled_fg: Rgb(108, 112, 134),
+        diff_line_add: Rgb(166, 227, 161),
+        diff_line_delete: Rgb(243, 139, 168),
+        diff_file_added: Rgb(166, 227, 161),
+        diff_file_removed: Rgb(243, 139, 168),
+        diff_file_moved: Rgb(245, 194, 231),
+        diff_file_modified: Rgb(249, 226, 175),
+        commit_hash: Rgb(203, 166, 247),
+        commit_time: Rgb(148, 226, 213),
+        commit_author: Rgb(166, 227, 161),
+        danger_fg: Rgb(243, 139, 168),
+        push_gauge_bg: Rgb(69, 71, 90),
+        push_gauge_fg: Rgb(203, 166, 247),
+        tag_fg: Rgb(245, 194, 231),
+        branch_fg: Rgb(249, 226, 175),
+      )
+    '';
+  };
+
+  programs.lazydocker = {
+    enable = true;
+    settings = {
+      gui.theme = {
+        activeBorderColor = [ "#cba6f7" "bold" ];
+        inactiveBorderColor = [ "#45475a" ];
+        selectedLineBgColor = [ "#313244" ];
+        defaultFgColor = [ "#cdd6f4" ];
       };
     };
   };
@@ -460,6 +547,16 @@
       sha256 = "sha256-THRpq5vaKCwf9gaso3ycC4TNDLZtBB5Ofh/tOXkfRkQ=";
     };
 
+    "QtProject/qtcreator/styles/catppuccin-mocha.xml".source = pkgs.fetchurl {
+      url = "https://raw.githubusercontent.com/catppuccin/qtcreator/main/styles/catppuccin-mocha.xml";
+      sha256 = "sha256-7A6+amSfp+UMN/FcTs/s+2mu9pxkoDnYaH0yUwqMy4U=";
+    };
+
+    "QtProject/qtcreator/themes/catppuccin-mocha.creatortheme".source = pkgs.fetchurl {
+      url = "https://raw.githubusercontent.com/catppuccin/qtcreator/main/themes/catppuccin-mocha.creatortheme";
+      sha256 = "sha256-vTulNllwbeq607yhoz8cdgEv9Pvqo7+qQlw8KFiu2WU=";
+    };
+
     "konsole/Catppuccin-Mocha.profile".text = ''
       [General]
       Name=Catppuccin-Mocha
@@ -634,6 +731,21 @@
         }
       }
     '';
+  };
+
+  xdg.dataFile."org.kde.syntax-highlighting/themes/catppuccin-mocha.theme".source = pkgs.fetchurl {
+    url = "https://raw.githubusercontent.com/catppuccin/ksyntaxhighlighting/main/themes/mocha.theme";
+    sha256 = "sha256-UfP4WImQ/30BRvyysGClFcu1m6ZKzA7VOP5kmoD/iwQ=";
+  };
+
+  home.file."Documents/dotfiles/vault/.obsidian/themes/Catppuccin/theme.css".source = pkgs.fetchurl {
+    url = "https://raw.githubusercontent.com/catppuccin/obsidian/main/theme.css";
+    sha256 = "sha256-8cqzvgEp9umFDRLYlGL6A096FDfEims4F9yWyVy8pCI=";
+  };
+
+  home.file."Documents/dotfiles/vault/.obsidian/themes/Catppuccin/manifest.json".source = pkgs.fetchurl {
+    url = "https://raw.githubusercontent.com/catppuccin/obsidian/main/manifest.json";
+    sha256 = "sha256-rCAQBVxf/etlLVoCRJext1ThX7AWl9Z77zJzcw0SzgM=";
   };
 
   programs.thunderbird.enable = true;

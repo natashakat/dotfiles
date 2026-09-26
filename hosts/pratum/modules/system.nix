@@ -247,7 +247,6 @@
       flavor = "mocha";
       accent = "mauve";
     })
-    papirus-icon-theme
     catppuccin-cursors.mochaMauve
     catppuccin-sddm
     wl-clipboard
