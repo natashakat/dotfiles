@@ -8,10 +8,13 @@
       "networkmanager"
       "wheel"
       "libvirtd"
+      "scanner"
     ];
     packages = with pkgs; [
       kdePackages.kate
       qtcreator
+      nautilus
+      gvfs
       prismlauncher
       heroic
       lutris
@@ -38,7 +41,10 @@
       ungoogled-chromium
       freetube
       xenia-canary
+      rpcs3
+      ryubing
       motrix
+      qbittorrent
       nicotine-plus
       opencode
       pkgs.jetbrains.clion
@@ -55,6 +61,16 @@
       hyfetch
       librewolf
       
+    ];
+  };
+
+  users.users."lucy" = {
+    isNormalUser = true;
+    description = "Lucy";
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+      "scanner"
     ];
   };
 

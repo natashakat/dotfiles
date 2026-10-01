@@ -12,13 +12,15 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.home-manager.follows = "home-manager";
     };
+    nix-flatpak.url = "github:gmodena/nix-flatpak";
   };
 
-  outputs = { self, nixpkgs, home-manager, plasma-manager, ... }: {
+  outputs = { self, nixpkgs, home-manager, plasma-manager, nix-flatpak, ... }: {
     nixosConfigurations.pratum = nixpkgs.lib.nixosSystem {
       modules = [
         ./hosts/pratum/configuration.nix
         home-manager.nixosModules.home-manager
+        nix-flatpak.nixosModules.nix-flatpak
         { home-manager.sharedModules = [ plasma-manager.homeModules.plasma-manager ]; }
       ];
     };

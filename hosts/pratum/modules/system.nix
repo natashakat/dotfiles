@@ -20,6 +20,9 @@
   networking.hostName = "pratum";
   networking.hostId = "685d54a9";
   networking.networkmanager.enable = true;
+  # nftables statt legacy-iptables (Kernel 7.x ohne ip_tables).
+  # Zieht auch die nft-Variante von Waydroid rein.
+  networking.nftables.enable = true;
 
   time.timeZone = "Europe/Amsterdam";
 
@@ -39,6 +42,26 @@
 
   services.printing.enable = true;
 
+  hardware.printers.ensurePrinters = [
+    {
+      name = "Lexmark-MX410de";
+      description = "Lexmark MX410de";
+      deviceUri = "ipp://10.8.0.198/ipp/print";
+      model = "everywhere";
+    }
+  ];
+
+  hardware.sane = {
+    enable = true;
+    extraBackends = [ pkgs.sane-airscan ];
+  };
+
+  services.avahi = {
+    enable = true;
+    nssmdns4 = true;
+    openFirewall = true;
+  };
+
   services.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
@@ -51,13 +74,24 @@
 
   system.stateVersion = "26.05";
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
 
   hardware.cpu.intel.updateMicrocode = true;
   hardware.enableRedistributableFirmware = true;
 
   virtualisation.libvirtd.enable = true;
   programs.virt-manager.enable = true;
+  virtualisation.waydroid.enable = true;
+
+  services.flatpak = {
+    enable = true;
+    packages = [
+      "org.vinegarhq.Sober"
+    ];
+  };
 
   security.sudo.enable = true;
   security.sudo-rs.enable = false;
@@ -78,6 +112,23 @@
     gui.enable = true;
   };
 
+  services.ollama = {
+    enable = true;
+    package = pkgs.ollama-rocm;
+    # Passen in 8 GB VRAM (RX 6600), Rest per RAM-Offload.
+    loadModels = [
+      "qwen3:8b"
+      "qwen2.5-coder:7b"
+      "starcoder2:7b"
+      "deepseek-r1:8b"
+      "gemma3:4b"
+      "phi4-mini"
+      "nomic-embed-text"
+      "mxbai-embed-large"
+      "moondream"
+    ];
+  };
+
   programs.nh = {
     enable = true;
     clean.enable = true;
@@ -94,7 +145,13 @@
   fileSystems."/mnt/mireo-data" = {
     device = "mireo:/data";
     fsType = "nfs";
-    options = [ "x-systemd.automount" "noauto" "nofail" "_netdev" "x-systemd.idle-timeout=600" ];
+    options = [
+      "x-systemd.automount"
+      "noauto"
+      "nofail"
+      "_netdev"
+      "x-systemd.idle-timeout=600"
+    ];
   };
 
   systemd.tmpfiles.rules = [
@@ -104,7 +161,10 @@
   systemd.services.zfs-user-permissions = {
     description = "Make ZFS pool roots user writable";
     wantedBy = [ "multi-user.target" ];
-    after = [ "zfs-import.target" "zfs.target" ];
+    after = [
+      "zfs-import.target"
+      "zfs.target"
+    ];
     wants = [ "zfs-import.target" ];
     serviceConfig.Type = "oneshot";
     serviceConfig.RemainAfterExit = true;
@@ -121,6 +181,20 @@
         fi
       done
     '';
+  };
+
+  virtualisation.docker = {
+    enable = true;
+    # Set up resource limits
+    daemon.settings = {
+      experimental = true;
+      default-address-pools = [
+        {
+          base = "172.30.0.0/16";
+          size = 24;
+        }
+      ];
+    };
   };
 
   environment.systemPackages = with pkgs; [
@@ -187,6 +261,8 @@
     python3
     libreoffice
     obsidian
+    kdePackages.skanpage
+    blender
     openscad
     freecad
     telegram-desktop
@@ -202,6 +278,15 @@
     fzf
     jq
     vivid
+    yazi
+    tealdeer
+    yq-go
+    xh
+    httpie
+    mosh
+    dust
+    duf
+    lzip
     zoxide
     zellij
     tmux
@@ -234,6 +319,7 @@
     comma
     nixfmt
     jetbrains-mono
+    nerd-fonts.jetbrains-mono
     # Catppuccin Mocha Mauve desktop theme (matches Plasma/GTK config in home.nix)
     (catppuccin-kde.override {
       flavour = [ "mocha" ];

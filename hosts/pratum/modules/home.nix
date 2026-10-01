@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 let
   mkQtMarketplaceExt =
@@ -236,6 +236,15 @@ in
   programs.fzf = {
     enable = true;
     enableBashIntegration = true;
+  };
+
+  programs.ghostty = {
+    enable = true;
+    settings = {
+      theme = "catppuccin-mocha";
+      font-family = "JetBrainsMono Nerd Font";
+      font-size = 12;
+    };
   };
 
   programs.eza = {
@@ -526,6 +535,7 @@ in
 
     "mimeapps.list".text = ''
       [Default Applications]
+      inode/directory=org.gnome.Nautilus.desktop
       x-scheme-handler/freetube=freetube.desktop
       x-scheme-handler/mo=motrix.desktop
       x-scheme-handler/motrix=motrix.desktop
@@ -638,6 +648,7 @@ in
     "opencode/opencode.jsonc".text = ''
       {
         "$schema": "https://opencode.ai/config.json",
+        "theme": "catppuccin",
         "mcp": {
           "nixos": {
             "type": "local",
@@ -727,6 +738,30 @@ in
             "type": "local",
             "command": ["open-websearch"],
             "enabled": true
+          },
+          "blender": {
+            "type": "local",
+            "command": ["uvx", "mcp-for-blender"],
+            "enabled": true,
+            "environment": {
+              "BLENDER_HOST": "localhost",
+              "BLENDER_PORT": "9876"
+            }
+          },
+          "openscad": {
+            "type": "local",
+            "command": ["uv", "run", "--with", "git+https://github.com/quellant/openscad-mcp.git", "openscad-mcp"],
+            "enabled": true
+          },
+          "freecad": {
+            "type": "local",
+            "command": ["uvx", "freecad-mcp"],
+            "enabled": true
+          },
+          "jetbrains": {
+            "type": "remote",
+            "url": "http://localhost:63342/api/mcp",
+            "enabled": true
           }
         }
       }
@@ -747,11 +782,40 @@ in
     url = "https://raw.githubusercontent.com/catppuccin/obsidian/main/manifest.json";
     sha256 = "sha256-rCAQBVxf/etlLVoCRJext1ThX7AWl9Z77zJzcw0SzgM=";
   };
-
   programs.thunderbird.enable = true;
   programs.freetube.enable = true;
   programs.keepassxc.enable = true;
   programs.prismlauncher.enable = true;
+
+  # qBittorrent nur über Mullvad (wg0-mullvad), Downloads nach /merrick-g.
+  # Setzt idempotent Bindung + Pfade in qBittorrent.conf.
+  home.activation.qbittorrentVpnBind = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    CONF="$HOME/.config/qBittorrent/qBittorrent.conf"
+    mkdir -p /merrick-g/Torrents/temp
+    if [ -f "$CONF" ]; then
+      ${pkgs.python3}/bin/python3 - "$CONF" <<'EOF'
+    import configparser, sys
+    conf = sys.argv[1]
+    p = configparser.ConfigParser()
+    p.optionxform = str
+    p.read(conf)
+    if "Preferences" not in p:
+        p["Preferences"] = {}
+    p["Preferences"]["Connection\\Interface"] = "wg0-mullvad"
+    p["Preferences"]["Connection\\InterfaceName"] = "wg0-mullvad"
+    if "BitTorrent" not in p:
+        p["BitTorrent"] = {}
+    p["BitTorrent"]["Session\\DefaultSavePath"] = "/merrick-g/Torrents/"
+    p["BitTorrent"]["Session\\TempPath"] = "/merrick-g/Torrents/temp/"
+    p["BitTorrent"]["Session\\TempPathEnabled"] = "true"
+    with open(conf, "w") as f:
+        p.write(f, space_around_delimiters=False)
+    EOF
+    else
+      mkdir -p "$(dirname "$CONF")"
+      printf '[Preferences]\nConnection\\Interface=wg0-mullvad\nConnection\\InterfaceName=wg0-mullvad\n[BitTorrent]\nSession\\DefaultSavePath=/merrick-g/Torrents/\nSession\\TempPath=/merrick-g/Torrents/temp/\nSession\\TempPathEnabled=true\n' > "$CONF"
+    fi
+  '';
 
   home.packages = with pkgs; [
     obsidian
