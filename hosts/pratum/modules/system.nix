@@ -187,6 +187,10 @@
     enable = true;
     # Set up resource limits
     daemon.settings = {
+      dns = [
+        "1.1.1.1"
+        "8.8.8.8"
+      ];
       experimental = true;
       default-address-pools = [
         {
