@@ -1,16 +1,19 @@
 { config, pkgs, ... }:
 
+let
+  # https://github.com/flakesonnix.keys
+  flakesonnixKeys = [
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOgPFwTysg5vOZ77Zqo9AehacYvO4iTm/T4QTy7MtfD2"
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAT5LcBzQCMfPyq0t29vGjz6UCcTXKZWROmUy82A0lrS"
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAzrW5cHMre50s8jFSbG6Yzg2TlQkKNQ59qRejIRUM0T"
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFSg7uG+/7pn6biGGzHTynH7FZUu0YzhfurY0L5GW7Di"
+  ];
+in
 {
   users.users."helianthus" = {
     isNormalUser = true;
     description = "helianthus maximus";
-    openssh.authorizedKeys.keys = [
-      # https://github.com/flakesonnix.keys
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOgPFwTysg5vOZ77Zqo9AehacYvO4iTm/T4QTy7MtfD2"
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAT5LcBzQCMfPyq0t29vGjz6UCcTXKZWROmUy82A0lrS"
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAzrW5cHMre50s8jFSbG6Yzg2TlQkKNQ59qRejIRUM0T"
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFSg7uG+/7pn6biGGzHTynH7FZUu0YzhfurY0L5GW7Di"
-    ];
+    openssh.authorizedKeys.keys = flakesonnixKeys;
     extraGroups = [
       "networkmanager"
       "wheel"
@@ -74,12 +77,28 @@
   users.users."lucy" = {
     isNormalUser = true;
     description = "Lucy";
+    openssh.authorizedKeys.keys = flakesonnixKeys;
     extraGroups = [
       "networkmanager"
       "wheel"
       "scanner"
     ];
   };
+
+  # Allow deploy-rs to upload unsigned closures and activate the system as root.
+  nix.settings.trusted-users = [ "lucy" ];
+  security.sudo.extraRules = [
+    {
+      users = [ "lucy" ];
+      runAs = "root";
+      commands = [
+        {
+          command = "ALL";
+          options = [ "NOPASSWD" ];
+        }
+      ];
+    }
+  ];
 
   programs.firefox = {
     enable = true;
