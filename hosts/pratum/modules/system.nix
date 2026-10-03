@@ -40,6 +40,8 @@
     LC_TIME = "de_DE.UTF-8";
   };
 
+  services.openssh.enable = true;
+
   services.printing.enable = true;
 
   hardware.printers.ensurePrinters = [
